@@ -1,65 +1,270 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import type { Metadata } from 'next'
+import Logo from '@/components/Logo'
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "PondyPrep — Pondicherry Government Exam Mock Tests | Real Question Papers",
+  description: "India's only mock test platform exclusively for Pondicherry (Puducherry) government recruitment exams. UDC, LDC, Field Assistant, VAO, Police Constable — real question papers, timed mock tests.",
+}
+
+const EXAM_LABELS: Record<string, string> = {
+  UDC: 'Upper Division Clerk',
+  LDC: 'Lower Division Clerk',
+  FIELD_ASSISTANT: 'Field Assistant',
+  ASSISTANT_TIER1: 'Assistant Tier-1',
+  ASSISTANT_TIER2: 'Assistant Tier-2',
+  POLICE_CONSTABLE: 'Police Constable',
+  VAO: 'Village Administrative Officer',
+}
+
+const SAMPLE_QUESTION = {
+  question: "Two identical conducting balls having positive charges q₁ and q₂ are separated by a centre to centre distance r. If they are made to touch each other and then separated to the same distance, the force between them will be",
+  options: { A: "less than before", B: "same as before", C: "more than before", D: "zero" },
+}
+
+const FAQ = [
+  { q: "Which exams are covered?", a: "UDC, LDC, Field Assistant, Assistant Tier 1 & 2, Police Constable, and VAO — all Pondicherry government recruitment exams." },
+  { q: "Are these real question papers?", a: "Yes. Every question is sourced from official Pondicherry recruitment exam papers, not AI-generated content." },
+  { q: "How often are new papers added?", a: "As soon as new exams are conducted. Paid users are notified by email when new papers are available." },
+  { q: "Is the payment a subscription?", a: "No. It is a one-time, lifetime payment. Pay once and access everything forever." },
+  { q: "Can I attempt the same test multiple times?", a: "Yes, unlimited attempts after paying." },
+  { q: "Is this only for Pondicherry exams?", a: "Yes — exclusively Puducherry government recruitment. No irrelevant state-level content." },
+]
+
+export default async function LandingPage() {
+  const supabase = await createClient()
+  const { data: exams } = await supabase
+    .from('exams')
+    .select('id, slug, title, year, exam_type, is_free, duration_mins')
+    .eq('is_active', true)
+    .order('year', { ascending: false })
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": FAQ.map(f => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a }
+    }))
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <div className="min-h-screen">
+        {/* Navbar */}
+        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+          <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <Logo />
+            <div className="flex items-center gap-4">
+              <Link href="/tests" className="text-sm text-slate-600 hover:text-slate-900">Exams</Link>
+              <Link href="/login" className="text-sm text-slate-600 hover:text-slate-900">Log in</Link>
+              <Link href="/signup" className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                Try Free
+              </Link>
+            </div>
+          </div>
+        </nav>
+
+        {/* Hero */}
+        <section className="max-w-6xl mx-auto px-4 pt-20 pb-16 text-center">
+          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-xs font-medium px-3 py-1.5 rounded-full mb-6 border border-blue-100">
+            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+            Exclusively for Pondicherry Government Exams
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight max-w-3xl mx-auto">
+            India&apos;s Only Mock Test Platform Built for{' '}
+            <span className="text-blue-600">Pondicherry Exams</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-6 text-lg text-slate-500 max-w-2xl mx-auto">
+            Real question papers. Timed mock tests. One-time payment.
+            Exclusively for Puducherry government recruitment aspirants.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/signup"
+              className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-base hover:bg-blue-700 transition-colors shadow-sm"
+            >
+              Start Free Test
+            </Link>
+            <Link
+              href="/tests"
+              className="bg-white text-slate-700 px-8 py-4 rounded-xl font-semibold text-base hover:bg-slate-50 transition-colors border border-slate-200"
+            >
+              View All Exams
+            </Link>
+          </div>
+          <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-slate-500">
+            <span className="flex items-center gap-1.5"><span className="text-green-500">✓</span> 1000+ Real Questions</span>
+            <span className="flex items-center gap-1.5"><span className="text-green-500">✓</span> Updated Regularly</span>
+            <span className="flex items-center gap-1.5"><span className="text-green-500">✓</span> One-time payment</span>
+            <span className="flex items-center gap-1.5"><span className="text-green-500">✓</span> Exclusively Puducherry</span>
+          </div>
+        </section>
+
+        {/* Why PondyPrep */}
+        <section className="bg-white border-y border-slate-200">
+          <div className="max-w-6xl mx-auto px-4 py-16">
+            <h2 className="text-2xl font-bold text-slate-900 text-center mb-10">Why choose us?</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { icon: "📄", title: "Real Question Papers", desc: "Every test uses actual questions from official Pondicherry recruitment exams — not made-up content." },
+                { icon: "⏱️", title: "Timed Mock Tests", desc: "Replicate actual exam conditions with countdown timers and auto-submit — build real exam stamina." },
+                { icon: "🎯", title: "Exclusively for Puducherry", desc: "No irrelevant content from other states. Every question is relevant to Pondicherry recruitments." },
+                { icon: "🔄", title: "Updated Regularly", desc: "New exam papers added as soon as they're released. Paid users get notified by email." },
+                { icon: "♾️", title: "Unlimited Attempts", desc: "Retake any exam as many times as you want. Track your improvement over time." },
+                { icon: "💳", title: "One-time Payment", desc: "Pay once. No monthly fees, no subscriptions. Lifetime access to all exams." },
+              ].map(f => (
+                <div key={f.title} className="p-6 rounded-2xl border border-slate-200 hover:border-blue-200 hover:shadow-sm transition-all">
+                  <div className="text-3xl mb-3">{f.icon}</div>
+                  <h3 className="font-semibold text-slate-900 mb-1">{f.title}</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed">{f.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Available Exams */}
+        <section className="max-w-6xl mx-auto px-4 py-16">
+          <h2 className="text-2xl font-bold text-slate-900 text-center mb-2">Available Exams</h2>
+          <p className="text-slate-500 text-center text-sm mb-10">Real past papers from Pondicherry government recruitment examinations</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {(exams || []).map(exam => (
+              <Link
+                key={exam.id}
+                href={`/tests/${exam.slug}`}
+                className="group relative bg-white rounded-2xl border border-slate-200 p-6 hover:border-blue-300 hover:shadow-md transition-all"
+              >
+                {exam.is_free && (
+                  <span className="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                    Free
+                  </span>
+                )}
+                <div className="text-xs text-blue-600 font-medium mb-1">{EXAM_LABELS[exam.exam_type] || exam.exam_type}</div>
+                <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">{exam.title}</h3>
+                <div className="mt-3 flex items-center gap-3 text-xs text-slate-400">
+                  <span>100 questions</span>
+                  <span>·</span>
+                  <span>{exam.duration_mins} min</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Sample Question */}
+        <section className="bg-white border-y border-slate-200">
+          <div className="max-w-2xl mx-auto px-4 py-16">
+            <h2 className="text-2xl font-bold text-slate-900 text-center mb-2">Try a Sample Question</h2>
+            <p className="text-slate-500 text-center text-sm mb-8">From the actual UDC 2023 question paper</p>
+            <div className="bg-slate-50 rounded-2xl border border-slate-200 p-6">
+              <p className="text-sm font-medium text-slate-800 mb-4 leading-relaxed">{SAMPLE_QUESTION.question}</p>
+              <div className="space-y-2">
+                {(Object.entries(SAMPLE_QUESTION.options) as [string, string][]).map(([key, value]) => (
+                  <div key={key} className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-700">
+                    <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs font-semibold text-slate-600 shrink-0">{key}</span>
+                    {value}
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-xs text-slate-400 text-center">Sign up to see the answer and take the full test →</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing */}
+        <section className="max-w-6xl mx-auto px-4 py-16">
+          <h2 className="text-2xl font-bold text-slate-900 text-center mb-10">Simple Pricing</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            <div className="bg-white rounded-2xl border border-slate-200 p-8">
+              <div className="text-slate-500 font-medium mb-2">Free</div>
+              <div className="text-4xl font-bold text-slate-900 mb-1">₹0</div>
+              <div className="text-sm text-slate-400 mb-6">No credit card needed</div>
+              <ul className="space-y-2 text-sm text-slate-600 mb-8">
+                <li className="flex items-center gap-2"><span className="text-green-500">✓</span> 1 free test</li>
+                <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Instant results</li>
+                <li className="flex items-center gap-2"><span className="text-slate-300">✗</span> All exams</li>
+                <li className="flex items-center gap-2"><span className="text-slate-300">✗</span> Mini topic tests</li>
+              </ul>
+              <Link href="/signup" className="block text-center border border-slate-200 text-slate-700 py-3 rounded-xl font-medium text-sm hover:bg-slate-50 transition-colors">
+                Try Free
+              </Link>
+            </div>
+
+            <div className="bg-blue-600 rounded-2xl p-8 text-white relative overflow-hidden">
+              <div className="absolute top-4 right-4 bg-white/20 text-white text-xs font-medium px-2 py-0.5 rounded-full">
+                Best value
+              </div>
+              <div className="text-blue-100 font-medium mb-2">Lifetime Access</div>
+              <div className="text-2xl font-bold mb-1">One-time payment</div>
+              <div className="text-sm text-blue-200 mb-6">Pay once, access everything forever</div>
+              <ul className="space-y-2 text-sm text-blue-100 mb-8">
+                <li className="flex items-center gap-2"><span className="text-white">✓</span> All available exam papers</li>
+                <li className="flex items-center gap-2"><span className="text-white">✓</span> Unlimited attempts</li>
+                <li className="flex items-center gap-2"><span className="text-white">✓</span> Topic mini tests</li>
+                <li className="flex items-center gap-2"><span className="text-white">✓</span> Random practice tests</li>
+                <li className="flex items-center gap-2"><span className="text-white">✓</span> New papers included free</li>
+              </ul>
+              <Link href="/signup" className="block text-center bg-white text-blue-600 py-3 rounded-xl font-semibold text-sm hover:bg-blue-50 transition-colors">
+                Unlock All Tests
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section className="bg-white border-y border-slate-200">
+          <div className="max-w-6xl mx-auto px-4 py-16">
+            <h2 className="text-2xl font-bold text-slate-900 text-center mb-10">How It Works</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+              {[
+                { step: "1", title: "Sign Up Free", desc: "Create your account in 30 seconds. No credit card needed." },
+                { step: "2", title: "Take a Free Test", desc: "Experience the platform with a real question paper." },
+                { step: "3", title: "Unlock Full Access", desc: "One-time payment for lifetime access to all exams." },
+              ].map(s => (
+                <div key={s.step} className="text-center">
+                  <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mx-auto mb-4">
+                    {s.step}
+                  </div>
+                  <h3 className="font-semibold text-slate-900 mb-1">{s.title}</h3>
+                  <p className="text-sm text-slate-500">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="max-w-3xl mx-auto px-4 py-16">
+          <h2 className="text-2xl font-bold text-slate-900 text-center mb-10">Frequently Asked Questions</h2>
+          <div className="space-y-4">
+            {FAQ.map(f => (
+              <div key={f.q} className="bg-white rounded-2xl border border-slate-200 p-6">
+                <h3 className="font-semibold text-slate-900 mb-2">{f.q}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed">{f.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-slate-200 bg-white">
+          <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <Logo size="sm" />
+            <div className="flex gap-6 text-sm text-slate-500">
+              <Link href="/tests" className="hover:text-slate-700">Exams</Link>
+              <Link href="/privacy" className="hover:text-slate-700">Privacy</Link>
+              <Link href="/terms" className="hover:text-slate-700">Terms</Link>
+              <Link href="/refunds" className="hover:text-slate-700">Refunds</Link>
+            </div>
+            <p className="text-xs text-slate-400">© 2025 PondyPrep — Exclusively for Pondicherry Exam Aspirants</p>
+          </div>
+        </footer>
+      </div>
+    </>
+  )
 }
