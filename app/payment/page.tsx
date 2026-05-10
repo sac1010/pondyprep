@@ -37,9 +37,12 @@ export default async function PaymentPage() {
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
             {/* Price */}
             <div className="bg-blue-600 p-6 text-white text-center">
+              <div className="inline-flex items-center gap-1.5 bg-yellow-400 text-yellow-900 text-xs font-bold px-2.5 py-1 rounded-full mb-3">
+                🎉 Launch offer — valid till 31 May
+              </div>
               <div className="flex items-baseline justify-center gap-2">
-                <span className="text-5xl font-bold">₹349</span>
-                <span className="text-blue-200 line-through text-xl">₹999</span>
+                <span className="text-5xl font-bold">₹299</span>
+                <span className="text-blue-200 line-through text-xl">₹499</span>
               </div>
               <p className="text-blue-100 text-sm mt-1">One-time · Lifetime access</p>
             </div>

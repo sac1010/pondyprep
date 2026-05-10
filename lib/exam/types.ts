@@ -51,6 +51,7 @@ export interface QuestionPublic {
   option_c: string
   option_d: string
   category: Category | null
+  explanation: string | null
 }
 
 export interface ExamSession {

@@ -29,6 +29,7 @@ CREATE TABLE questions (
   option_d       TEXT NOT NULL,
   correct_answer CHAR(1) NOT NULL CHECK (correct_answer IN ('A','B','C','D')),
   category       TEXT,
+  explanation    TEXT,
   created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE (exam_id, position)
 );
@@ -38,7 +39,7 @@ CREATE INDEX idx_questions_category ON questions(category);
 
 -- Public view: never exposes correct_answer to browser
 CREATE VIEW questions_public AS
-  SELECT id, exam_id, position, question_text, option_a, option_b, option_c, option_d, category
+  SELECT id, exam_id, position, question_text, option_a, option_b, option_c, option_d, category, explanation
   FROM questions;
 
 -- USER PROFILES
@@ -92,6 +93,7 @@ CREATE TABLE exam_sessions (
   question_ids    JSONB NOT NULL,
   category        TEXT,
   question_count  INT,
+  ai_review       TEXT,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -111,6 +113,17 @@ CREATE TABLE user_answers (
 
 CREATE INDEX idx_answers_session_id ON user_answers(session_id);
 
+-- BOOKMARKS
+CREATE TABLE bookmarks (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  question_id UUID NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (user_id, question_id)
+);
+
+CREATE INDEX idx_bookmarks_user_id ON bookmarks(user_id);
+
 -- PAYMENTS
 CREATE TABLE payments (
   id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -118,7 +131,7 @@ CREATE TABLE payments (
   razorpay_order_id   TEXT NOT NULL UNIQUE,
   razorpay_payment_id TEXT UNIQUE,
   razorpay_signature  TEXT,
-  amount_paise        INT NOT NULL DEFAULT 34900,
+  amount_paise        INT NOT NULL DEFAULT 29900,
   currency            TEXT NOT NULL DEFAULT 'INR',
   status              TEXT NOT NULL DEFAULT 'created'
                       CHECK (status IN ('created','paid','failed')),
@@ -137,6 +150,7 @@ ALTER TABLE active_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE exam_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_answers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE bookmarks ENABLE ROW LEVEL SECURITY;
 
 -- Exams: public read
 CREATE POLICY "exams_public_read" ON exams
@@ -169,3 +183,9 @@ CREATE POLICY "answers_own" ON user_answers
 -- Payments: own rows read only; insert/update via service role only
 CREATE POLICY "payments_own_read" ON payments
   FOR SELECT USING (user_id = auth.uid());
+
+-- Bookmarks: own rows only
+CREATE POLICY "bookmarks_own" ON bookmarks
+  FOR ALL USING (user_id = auth.uid());
+
+-- ai_review is stored in exam_sessions (no separate table needed)

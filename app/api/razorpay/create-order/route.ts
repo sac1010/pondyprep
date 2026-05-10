@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 import { createRazorpayOrder } from '@/lib/razorpay/client'
 
-const AMOUNT_PAISE = 34900 // ₹349
+const AMOUNT_PAISE = 29900 // ₹299 launch offer
 
 export async function POST() {
   const supabase = await createClient()

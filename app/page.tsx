@@ -113,6 +113,9 @@ export default async function LandingPage() {
               {[
                 { icon: "📄", title: "Real Question Papers", desc: "Every test uses actual questions from official Pondicherry recruitment exams — not made-up content." },
                 { icon: "⏱️", title: "Timed Mock Tests", desc: "Replicate actual exam conditions with countdown timers and auto-submit — build real exam stamina." },
+                { icon: "💡", title: "Explanations for Every Answer", desc: "Every question comes with a concise explanation so you understand why the correct answer is right." },
+                { icon: "✨", title: "AI Performance Review", desc: "After each test, get an AI-generated coaching report that identifies your weak areas and suggests what to study next." },
+                { icon: "🔖", title: "Bookmark Questions", desc: "Save tricky questions to revisit later. Build your own revision list across all tests." },
                 { icon: "🎯", title: "Exclusively for Puducherry", desc: "No irrelevant content from other states. Every question is relevant to Pondicherry recruitments." },
                 { icon: "🔄", title: "Updated Regularly", desc: "New exam papers added as soon as they're released. Paid users get notified by email." },
                 { icon: "♾️", title: "Unlimited Attempts", desc: "Retake any exam as many times as you want. Track your improvement over time." },
@@ -196,17 +199,22 @@ export default async function LandingPage() {
             </div>
 
             <div className="bg-blue-600 rounded-2xl p-8 text-white relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-white/20 text-white text-xs font-medium px-2 py-0.5 rounded-full">
-                Best value
+              <div className="absolute top-4 right-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full">
+                Launch offer
               </div>
               <div className="text-blue-100 font-medium mb-2">Lifetime Access</div>
-              <div className="text-2xl font-bold mb-1">One-time payment</div>
-              <div className="text-sm text-blue-200 mb-6">Pay once, access everything forever</div>
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-4xl font-bold">₹299</span>
+                <span className="text-blue-300 line-through text-lg">₹499</span>
+              </div>
+              <div className="text-xs text-yellow-300 mb-5">Valid till 31 May · Pay once, access forever</div>
               <ul className="space-y-2 text-sm text-blue-100 mb-8">
                 <li className="flex items-center gap-2"><span className="text-white">✓</span> All available exam papers</li>
                 <li className="flex items-center gap-2"><span className="text-white">✓</span> Unlimited attempts</li>
-                <li className="flex items-center gap-2"><span className="text-white">✓</span> Topic mini tests</li>
-                <li className="flex items-center gap-2"><span className="text-white">✓</span> Random practice tests</li>
+                <li className="flex items-center gap-2"><span className="text-white">✓</span> Explanations for every question</li>
+                <li className="flex items-center gap-2"><span className="text-white">✓</span> AI performance review after each test</li>
+                <li className="flex items-center gap-2"><span className="text-white">✓</span> Bookmark questions</li>
+                <li className="flex items-center gap-2"><span className="text-white">✓</span> Topic mini tests &amp; random practice</li>
                 <li className="flex items-center gap-2"><span className="text-white">✓</span> New papers included free</li>
               </ul>
               <Link href="/signup" className="block text-center bg-white text-blue-600 py-3 rounded-xl font-semibold text-sm hover:bg-blue-50 transition-colors">

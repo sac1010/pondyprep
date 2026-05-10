@@ -13,6 +13,7 @@ interface RawQuestion {
   options: { A: string; B: string; C: string; D: string }
   answer: string
   category?: string
+  explanation?: string
 }
 
 const EXAM_REGISTRY = [
@@ -155,6 +156,7 @@ async function migrate() {
       option_d: q.options.D,
       correct_answer: q.answer,
       category: q.category ?? null,
+      explanation: q.explanation ?? null,
     }))
 
     // Upsert in batches of 50

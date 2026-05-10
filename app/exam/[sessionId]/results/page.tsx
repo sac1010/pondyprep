@@ -29,25 +29,30 @@ export default async function ResultsPage({ params }: { params: Promise<{ sessio
     .select('question_id, selected_option, is_correct')
     .eq('session_id', sessionId)
 
-  // Fetch questions with correct answers (service role)
+  // Fetch questions with correct answers + explanations (service role)
   const questionIds: string[] = session.question_ids
-  const { data: questions } = await serviceSupabase
-    .from('questions')
-    .select('id, position, question_text, option_a, option_b, option_c, option_d, correct_answer, category')
-    .in('id', questionIds)
+  const [{ data: questions }, { data: bookmarks }, { data: profile }] = await Promise.all([
+    serviceSupabase
+      .from('questions')
+      .select('id, position, question_text, option_a, option_b, option_c, option_d, correct_answer, category, explanation')
+      .in('id', questionIds),
+    supabase
+      .from('bookmarks')
+      .select('question_id')
+      .eq('user_id', user.id),
+    supabase
+      .from('user_profiles')
+      .select('has_paid')
+      .eq('id', user.id)
+      .single(),
+  ])
 
   if (!questions) notFound()
 
   // Order questions by original session order
   const orderedQuestions = questionIds.map(id => questions.find(q => q.id === id)!).filter(Boolean)
   const answersMap = Object.fromEntries((answers || []).map(a => [a.question_id, a]))
-
-  // Fetch user profile to check has_paid
-  const { data: profile } = await supabase
-    .from('user_profiles')
-    .select('has_paid')
-    .eq('id', user.id)
-    .single()
+  const bookmarkedIds = new Set((bookmarks || []).map(b => b.question_id))
 
   const accuracy = session.score != null
     ? Math.round((session.score / session.total_questions) * 100)
@@ -61,6 +66,7 @@ export default async function ResultsPage({ params }: { params: Promise<{ sessio
       accuracy={accuracy}
       hasPaid={profile?.has_paid ?? false}
       isFreeAttempt={session.is_free_attempt}
+      bookmarkedIds={Array.from(bookmarkedIds)}
     />
   )
 }
