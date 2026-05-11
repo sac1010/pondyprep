@@ -41,7 +41,7 @@ export default async function PaymentPage() {
                 🎉 Launch offer — valid till 31 May
               </div>
               <div className="flex items-baseline justify-center gap-2">
-                <span className="text-5xl font-bold">₹299</span>
+                <span className="text-5xl font-bold">₹199</span>
                 <span className="text-blue-200 line-through text-xl">₹499</span>
               </div>
               <p className="text-blue-100 text-sm mt-1">One-time · Lifetime access</p>

@@ -204,7 +204,7 @@ export default async function LandingPage() {
               </div>
               <div className="text-blue-100 font-medium mb-2">Lifetime Access</div>
               <div className="flex items-baseline gap-2 mb-1">
-                <span className="text-4xl font-bold">₹299</span>
+                <span className="text-4xl font-bold">₹199</span>
                 <span className="text-blue-300 line-through text-lg">₹499</span>
               </div>
               <div className="text-xs text-yellow-300 mb-5">Valid till 31 May · Pay once, access forever</div>

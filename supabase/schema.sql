@@ -131,7 +131,7 @@ CREATE TABLE payments (
   razorpay_order_id   TEXT NOT NULL UNIQUE,
   razorpay_payment_id TEXT UNIQUE,
   razorpay_signature  TEXT,
-  amount_paise        INT NOT NULL DEFAULT 29900,
+  amount_paise        INT NOT NULL DEFAULT 19900,
   currency            TEXT NOT NULL DEFAULT 'INR',
   status              TEXT NOT NULL DEFAULT 'created'
                       CHECK (status IN ('created','paid','failed')),
