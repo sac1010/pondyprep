@@ -43,7 +43,8 @@ export async function POST() {
       keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
     })
   } catch (err) {
-    console.error('Razorpay order error:', err)
-    return NextResponse.json({ error: 'order_failed' }, { status: 500 })
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('Razorpay order error:', message)
+    return NextResponse.json({ error: 'order_failed', detail: message }, { status: 500 })
   }
 }
