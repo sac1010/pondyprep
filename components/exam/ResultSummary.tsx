@@ -24,9 +24,6 @@ export default function ResultSummary({
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null)
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set(bookmarkedIds))
   const [bookmarkLoading, setBookmarkLoading] = useState<string | null>(null)
-  const [aiReview, setAiReview] = useState<string | null>(session.ai_review ?? null)
-  const [aiLoading, setAiLoading] = useState(false)
-  const [showAiReview, setShowAiReview] = useState(!!session.ai_review)
 
   useEffect(() => {
     const target = session.score ?? 0
@@ -59,23 +56,6 @@ export default function ResultSummary({
       })
     } finally {
       setBookmarkLoading(null)
-    }
-  }
-
-  async function handleAiReview() {
-    if (aiReview) { setShowAiReview(true); return }
-    setAiLoading(true)
-    try {
-      const res = await fetch('/api/exam/ai-review', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: session.id }),
-      })
-      const { review } = await res.json()
-      setAiReview(review)
-      setShowAiReview(true)
-    } finally {
-      setAiLoading(false)
     }
   }
 
@@ -135,44 +115,6 @@ export default function ResultSummary({
           )}
         </div>
 
-        {/* AI Review */}
-        <div className="mb-8">
-          {!showAiReview ? (
-            <button
-              onClick={handleAiReview}
-              disabled={aiLoading}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50 text-blue-700 text-sm font-medium hover:bg-blue-100 transition-colors disabled:opacity-60"
-            >
-              {aiLoading ? (
-                <>
-                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-                  </svg>
-                  Generating your AI review…
-                </>
-              ) : (
-                <>✨ Get AI Performance Review</>
-              )}
-            </button>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-2xl border border-blue-100 p-6"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-                  <span>✨</span> AI Performance Review
-                </h3>
-                <button onClick={() => setShowAiReview(false)} className="text-xs text-slate-400 hover:text-slate-600">
-                  Hide
-                </button>
-              </div>
-              <div className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{aiReview}</div>
-            </motion.div>
-          )}
-        </div>
 
         {/* Question review */}
         <h2 className="text-lg font-semibold text-slate-900 mb-4">Question Review</h2>
