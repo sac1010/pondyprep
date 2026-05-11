@@ -25,7 +25,7 @@ export async function POST() {
   try {
     const order = await createRazorpayOrder(
       AMOUNT_PAISE,
-      `order_${user.id}_${Date.now()}`
+      `o_${user.id.slice(0, 8)}_${Date.now()}`
     )
 
     // Insert payment record
