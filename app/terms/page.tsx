@@ -19,9 +19,9 @@ export default function TermsPage() {
             { title: '2. What PondyPrep Provides', body: 'PondyPrep provides mock tests based on real Pondicherry government exam papers. We are not affiliated with the Government of Puducherry or any official recruitment body.' },
             { title: '3. Account Registration', body: 'You must provide accurate information, keep your password secure, and not share credentials with others. Creating multiple accounts to abuse the free tier violates these terms.' },
             { title: '4. Free Test', body: 'New users get one free test session per account. It cannot be transferred or used more than once.' },
-            { title: '5. Paid Access', body: 'Payment of ₹349 gives lifetime access to all available exams. New papers added in future are included. Access is tied to your account and non-transferable.' },
+            { title: '5. Paid Access', body: 'Payment of ₹199 gives lifetime access to all available exams. New papers added in future are included. Access is tied to your account and non-transferable.' },
             { title: '6. Prohibited Conduct', body: 'You may not share credentials, use bots to scrape questions, create multiple accounts, or reproduce exam content without permission.' },
-            { title: '7. Limitation of Liability', body: 'PondyPrep provides practice material only. We do not guarantee exam results. Our liability is limited to the amount you paid (₹349).' },
+            { title: '7. Limitation of Liability', body: 'PondyPrep provides practice material only. We do not guarantee exam results. Our liability is limited to the amount you paid (₹199).' },
             { title: '8. Governing Law', body: 'These terms are governed by the laws of India. Disputes are subject to jurisdiction of courts in Puducherry.' },
             { title: '9. Contact', body: 'Email: support@pondyprep.in' },
           ].map(s => (

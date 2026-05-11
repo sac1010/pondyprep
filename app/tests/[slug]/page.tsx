@@ -186,7 +186,7 @@ export default async function ExamDetailPage(
                 href="/payment"
                 className="block w-full text-center bg-blue-600 text-white py-3.5 rounded-xl font-semibold text-sm hover:bg-blue-700 transition-colors"
               >
-                Unlock for ₹349 — Lifetime Access
+                Unlock for ₹199 — Lifetime Access
               </Link>
             )}
           </div>
