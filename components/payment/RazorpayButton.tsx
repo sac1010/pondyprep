@@ -112,7 +112,7 @@ export default function RazorpayButton({ userEmail, userName }: RazorpayButtonPr
           Processing…
         </>
       ) : (
-        'Unlock All Exams — ₹349'
+        'Unlock All Exams — ₹299'
       )}
     </button>
   )
