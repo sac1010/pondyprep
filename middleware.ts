@@ -4,8 +4,26 @@ import { NextResponse, type NextRequest } from 'next/server'
 const PROTECTED_ROUTES = ['/dashboard', '/exam', '/tests/random', '/tests/mini']
 const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/reset-password']
 
+const CANONICAL_HOST = 'pondyprep.in'
+
+function isCanonicalHost(host: string | null): boolean {
+  if (!host) return false
+  return host === CANONICAL_HOST || host === `www.${CANONICAL_HOST}`
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const host = request.headers.get('host')
+  const canonical = isCanonicalHost(host)
+
+  // On non-canonical hosts (vercel preview, localhost, etc.), block crawlers
+  // by serving a blocking robots.txt — overrides app/robots.ts for those hosts.
+  if (!canonical && pathname === '/robots.txt') {
+    return new NextResponse('User-agent: *\nDisallow: /\n', {
+      headers: { 'Content-Type': 'text/plain' },
+    })
+  }
+
   let response = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -42,6 +60,11 @@ export async function middleware(request: NextRequest) {
 
   if (isProtected && user && !user.email_confirmed_at) {
     return NextResponse.redirect(new URL('/verify-email', request.url))
+  }
+
+  // Tell search engines not to index any non-canonical host.
+  if (!canonical) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow')
   }
 
   return response
