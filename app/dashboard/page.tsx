@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import { formatDate, formatScore, formatAccuracy } from '@/lib/utils'
 import Logo from '@/components/Logo'
+import SignOutButton from '@/components/SignOutButton'
 
 export const metadata: Metadata = { title: 'Dashboard' }
 
@@ -43,6 +44,7 @@ export default async function DashboardPage() {
                 Unlock All
               </Link>
             )}
+            <SignOutButton />
           </div>
         </div>
       </nav>

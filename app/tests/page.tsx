@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 import Logo from '@/components/Logo'
+import SignOutButton from '@/components/SignOutButton'
 
 export const metadata: Metadata = {
   title: 'All Exams — Pondicherry Mock Tests',
@@ -46,7 +47,10 @@ export default async function TestsPage() {
           <Link href="/"><Logo /></Link>
           <div className="flex items-center gap-4">
             {user ? (
-              <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-900">Dashboard</Link>
+              <>
+                <Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-900">Dashboard</Link>
+                <SignOutButton />
+              </>
             ) : (
               <Link href="/login" className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">Sign in</Link>
             )}
