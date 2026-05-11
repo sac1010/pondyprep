@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   let durationMins = 120
   let totalQuestions = 100
 
-  // Access gate
+  // Access gate (don't consume free attempt yet — only after session is created)
   if (!profile.has_paid) {
     if (session_type !== 'mock') {
       return NextResponse.json({ error: 'upgrade_required' }, { status: 403 })
@@ -46,12 +46,6 @@ export async function POST(request: NextRequest) {
     if (profile.free_tests_used >= 1) {
       return NextResponse.json({ error: 'free_limit_reached' }, { status: 403 })
     }
-
-    // Atomically increment free_tests_used
-    await serviceSupabase
-      .from('user_profiles')
-      .update({ free_tests_used: profile.free_tests_used + 1 })
-      .eq('id', user.id)
 
     isFreeAttempt = true
     totalQuestions = FREE_QUESTION_COUNT
@@ -129,6 +123,14 @@ export async function POST(request: NextRequest) {
 
   if (sErr || !session) {
     return NextResponse.json({ error: 'session_create_failed' }, { status: 500 })
+  }
+
+  // Now that the session is created, consume the free attempt
+  if (isFreeAttempt) {
+    await serviceSupabase
+      .from('user_profiles')
+      .update({ free_tests_used: profile.free_tests_used + 1 })
+      .eq('id', user.id)
   }
 
   return NextResponse.json({
