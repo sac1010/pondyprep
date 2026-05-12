@@ -74,21 +74,11 @@ export async function POST(request: NextRequest) {
   } else if (session_type === 'mini_topic') {
     questionQuery = questionQuery
       .eq('category', category!)
-      .limit(question_count)
-    totalQuestions = question_count
-    durationMins = question_count
-
   } else if (session_type === 'mini_random') {
-    questionQuery = questionQuery.limit(question_count)
-    totalQuestions = question_count
-    durationMins = question_count
-
+    // No filters, fetch all for true randomness
   } else if (session_type === 'mini_exam') {
     questionQuery = questionQuery
       .eq('exam_id', exam_id!)
-      .limit(question_count)
-    totalQuestions = question_count
-    durationMins = question_count
   }
 
   const { data: questions, error: qErr } = await questionQuery
@@ -96,16 +86,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'questions_not_found' }, { status: 500 })
   }
 
-  // If a topic has fewer questions than requested, adjust the total down
-  if (session_type !== 'mock') {
-    totalQuestions = questions.length
-    durationMins = questions.length
-  }
-
-  // Shuffle for mini tests
+  // Shuffle and slice for mini tests to ensure true randomness from the full database
   let orderedQuestions = questions
   if (session_type !== 'mock') {
-    orderedQuestions = [...questions].sort(() => Math.random() - 0.5)
+    orderedQuestions = [...questions]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, question_count)
+      
+    // Adjust total down if the database had fewer questions than requested
+    totalQuestions = orderedQuestions.length
+    durationMins = orderedQuestions.length
   }
 
   const questionIds = orderedQuestions.map(q => q.id)
