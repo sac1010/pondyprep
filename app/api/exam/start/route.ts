@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 import type { StartExamPayload } from '@/lib/exam/types'
 
-const FREE_QUESTION_COUNT = 10
+const FREE_QUESTION_COUNT = 100
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -94,6 +94,12 @@ export async function POST(request: NextRequest) {
   const { data: questions, error: qErr } = await questionQuery
   if (qErr || !questions?.length) {
     return NextResponse.json({ error: 'questions_not_found' }, { status: 500 })
+  }
+
+  // If a topic has fewer questions than requested, adjust the total down
+  if (session_type !== 'mock') {
+    totalQuestions = questions.length
+    durationMins = questions.length
   }
 
   // Shuffle for mini tests

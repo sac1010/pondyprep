@@ -144,7 +144,7 @@ export default function ResultSummary({
                     }`}>
                       {isCorrect ? '✓' : selected ? '✗' : '—'}
                     </span>
-                    <span className="text-sm text-slate-700 line-clamp-2 flex-1">{q.question_text}</span>
+                    <span className={`text-sm text-slate-700 flex-1 ${isExpanded ? 'whitespace-pre-wrap' : 'line-clamp-2'}`}>{q.question_text}</span>
                   </button>
                   <div className="flex items-center gap-2 shrink-0">
                     <button

@@ -40,7 +40,7 @@ export default function QuestionCard({ question, selectedAnswer, index, total, o
           )}
         </div>
 
-        <p className="text-slate-900 font-medium leading-relaxed mb-6 text-base">
+        <p className="text-slate-900 font-medium leading-relaxed mb-6 text-base whitespace-pre-wrap">
           {question.question_text}
         </p>
 

@@ -38,6 +38,7 @@ export default async function TestsPage() {
     .from('exams')
     .select('id, slug, title, year, exam_type, is_free, duration_mins')
     .eq('is_active', true)
+    .order('is_free', { ascending: false })
     .order('year', { ascending: false })
 
   return (

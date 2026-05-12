@@ -22,16 +22,16 @@ export default function QuestionNav({ questionIds, answers, markedForReview, cur
   const currentId = questionIds[currentIndex]
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-4">
+    <div className="bg-white rounded-2xl border border-slate-200 p-5">
       <p className="text-xs font-medium text-slate-500 mb-3">Questions</p>
-      <div className="grid grid-cols-10 gap-1.5">
+      <div className="grid grid-cols-10 gap-0.5 sm:gap-1">
         {questionIds.map((id, i) => {
           const status = getQuestionStatus(id, answers, markedForReview, currentId)
           return (
             <button
               key={id}
               onClick={() => onNavigate(i)}
-              className={`w-7 h-7 rounded-lg border text-xs font-semibold transition-all ${statusColors[status]}`}
+              className={`w-full aspect-square rounded-md border text-[10px] sm:text-[11px] font-semibold tracking-tighter flex items-center justify-center transition-all ${statusColors[status]}`}
             >
               {i + 1}
             </button>
