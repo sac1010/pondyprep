@@ -4,8 +4,8 @@ import type { Metadata } from 'next'
 import Logo from '@/components/Logo'
 
 export const metadata: Metadata = {
-  title: "PondyPrep — Pondicherry Government Exam Mock Tests | Real Question Papers",
-  description: "India's only mock test platform exclusively for Pondicherry (Puducherry) government recruitment exams. UDC, LDC, Field Assistant, VAO, Police Constable — real question papers, timed mock tests.",
+  title: "PondyPrep — Pondicherry Government Mock Tests & Real Question Papers",
+  description: "Prepare for Pondicherry (Puducherry) government recruitment exams. UDC, LDC, Field Assistant, VAO, Police Constable — real previous question papers and timed mock tests.",
 }
 
 const EXAM_LABELS: Record<string, string> = {
@@ -77,11 +77,11 @@ export default async function LandingPage() {
             Exclusively for Pondicherry Government Exams
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight max-w-3xl mx-auto">
-            India&apos;s Only Mock Test Platform Built for{' '}
-            <span className="text-blue-600">Pondicherry Exams</span>
+            Mock Tests & Actual Question Papers for{' '}
+            <span className="text-blue-600">Pondicherry Recruitment Exams</span>
           </h1>
           <p className="mt-6 text-lg text-slate-500 max-w-2xl mx-auto">
-            Real question papers. Timed mock tests. One-time payment.
+            Real previous year question papers. Timed mock tests. One-time payment.
             Exclusively for Puducherry government recruitment aspirants.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">

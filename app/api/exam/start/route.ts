@@ -52,16 +52,18 @@ export async function POST(request: NextRequest) {
     durationMins = Math.ceil((FREE_QUESTION_COUNT * 120) / 100)
   }
 
-  // Build question query based on session type
-  let questionQuery = serviceSupabase
-    .from('questions')
-    .select('id, exam_id, position, question_text, option_a, option_b, option_c, option_d, category')
+  let orderedQuestions: any[] = []
 
   if (session_type === 'mock') {
-    questionQuery = questionQuery
+    const { data: questions, error: qErr } = await serviceSupabase
+      .from('questions')
+      .select('id, exam_id, position, question_text, option_a, option_b, option_c, option_d, category')
       .eq('exam_id', exam_id!)
       .order('position', { ascending: true })
       .limit(isFreeAttempt ? FREE_QUESTION_COUNT : 100)
+
+    if (qErr || !questions?.length) return NextResponse.json({ error: 'questions_not_found' }, { status: 500 })
+    orderedQuestions = questions
 
     // Get exam duration
     const { data: examData } = await supabase
@@ -71,29 +73,34 @@ export async function POST(request: NextRequest) {
       .single()
     if (examData && !isFreeAttempt) durationMins = examData.duration_mins
 
-  } else if (session_type === 'mini_topic') {
-    questionQuery = questionQuery
-      .eq('category', category!)
-  } else if (session_type === 'mini_random') {
-    // No filters, fetch all for true randomness
-  } else if (session_type === 'mini_exam') {
-    questionQuery = questionQuery
-      .eq('exam_id', exam_id!)
-  }
+  } else {
+    // For mini tests, fetch ONLY IDs first to save bandwidth and memory
+    let idQuery = serviceSupabase.from('questions').select('id')
+    
+    if (session_type === 'mini_topic') {
+      idQuery = idQuery.eq('category', category!)
+    } else if (session_type === 'mini_exam') {
+      idQuery = idQuery.eq('exam_id', exam_id!)
+    }
 
-  const { data: questions, error: qErr } = await questionQuery
-  if (qErr || !questions?.length) {
-    return NextResponse.json({ error: 'questions_not_found' }, { status: 500 })
-  }
+    const { data: idData, error: idErr } = await idQuery
+    if (idErr || !idData?.length) return NextResponse.json({ error: 'questions_not_found' }, { status: 500 })
 
-  // Shuffle and slice for mini tests to ensure true randomness from the full database
-  let orderedQuestions = questions
-  if (session_type !== 'mock') {
-    orderedQuestions = [...questions]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, question_count)
-      
-    // Adjust total down if the database had fewer questions than requested
+    // Shuffle IDs and pick the requested amount
+    const shuffledIds = idData.map(d => d.id).sort(() => Math.random() - 0.5)
+    const selectedIds = shuffledIds.slice(0, question_count)
+
+    // Fetch the full question payload ONLY for the randomly selected IDs
+    const { data: questions, error: qErr } = await serviceSupabase
+      .from('questions')
+      .select('id, exam_id, position, question_text, option_a, option_b, option_c, option_d, category')
+      .in('id', selectedIds)
+
+    if (qErr || !questions?.length) return NextResponse.json({ error: 'questions_not_found' }, { status: 500 })
+
+    // .in() does not guarantee order, so we shuffle again to ensure random order
+    orderedQuestions = [...questions].sort(() => Math.random() - 0.5)
+    
     totalQuestions = orderedQuestions.length
     durationMins = orderedQuestions.length
   }

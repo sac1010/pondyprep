@@ -23,6 +23,7 @@ export default function ExamShell({ initialData }: ExamShellProps) {
   const router = useRouter()
   const [state, dispatch] = useReducer(examReducer, initialExamState)
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [isOffline, setIsOffline] = useState(false)
   const autoSaveRef = useRef<NodeJS.Timeout | null>(null)
   const pendingSaveRef = useRef<Record<string, string | null>>({})
@@ -98,6 +99,7 @@ export default function ExamShell({ initialData }: ExamShellProps) {
   }
 
   async function submitExam() {
+    setIsSubmitting(true)
     const sessionId = initialData.sessionId
     const endTimeStored = sessionStorage.getItem(`exam_end_${sessionId}`)
     const endTime = endTimeStored ? parseInt(endTimeStored, 10) : Date.now()
@@ -127,6 +129,7 @@ export default function ExamShell({ initialData }: ExamShellProps) {
       } catch {
         attempts++
         if (attempts >= 2) {
+          setIsSubmitting(false)
           dispatch({ type: 'INIT', questions: state.questions, sessionId, durationSeconds: state.timeRemainingSeconds })
           toast.error('Submission failed. Your answers are safe — please try again.', { duration: 8000 })
         }
@@ -301,6 +304,23 @@ export default function ExamShell({ initialData }: ExamShellProps) {
                 </button>
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Submitting Overlay */}
+      <AnimatePresence>
+        {isSubmitting && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-[60]"
+          >
+            <div className="text-center">
+              <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-slate-600 font-medium">Submitting your test...</p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

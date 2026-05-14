@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import { formatDate, formatScore, formatAccuracy } from '@/lib/utils'
 import Logo from '@/components/Logo'
 import SignOutButton from '@/components/SignOutButton'
+import QuickRandomButton from '@/components/dashboard/QuickRandomButton'
 
 export const metadata: Metadata = { title: 'Dashboard' }
 
@@ -96,12 +97,7 @@ export default async function DashboardPage() {
             <p className="text-xs text-slate-400 mt-0.5">Topic or random practice</p>
             {!hasPaid && <span className="text-xs text-blue-600 font-medium">Unlock →</span>}
           </Link>
-          <Link href={hasPaid ? "/tests/random" : "/payment"} className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-blue-300 hover:shadow-sm transition-all group">
-            <div className="text-2xl mb-2">🔀</div>
-            <h3 className="font-semibold text-slate-900 group-hover:text-blue-600">Random Test</h3>
-            <p className="text-xs text-slate-400 mt-0.5">Mixed from all exams</p>
-            {!hasPaid && <span className="text-xs text-blue-600 font-medium">Unlock →</span>}
-          </Link>
+          <QuickRandomButton hasPaid={hasPaid} />
         </div>
 
         {/* Test history */}

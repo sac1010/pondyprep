@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'sonner'
+import AnnouncementBanner from '@/components/AnnouncementBanner'
 import './globals.css'
 
 const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
@@ -8,25 +9,27 @@ const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono'
 
 export const metadata: Metadata = {
   title: {
-    default: 'PondyPrep — Pondicherry Government Exam Mock Tests',
+    default: 'PondyPrep — Pondicherry Government Mock Tests & Question Papers',
     template: '%s | PondyPrep',
   },
   description:
-    "India's only mock test platform built exclusively for Pondicherry (Puducherry) government recruitment exams. Real question papers, timed tests, one-time lifetime payment.",
+    "Prepare for Pondicherry (Puducherry) government recruitment exams with actual question papers and timed mock tests. UDC, LDC, Field Assistant, Police Constable examinations. One-time lifetime payment.",
   keywords: [
-    'pondicherry government exam mock test',
-    'puducherry recruitment exam preparation',
+    'pondicherry government examinations',
+    'puducherry recruitment exams',
+    'pondicherry question papers',
+    'pondicherry mock tests',
     'UDC LDC mock test pondicherry',
-    'puducherry exam question papers',
-    'pondicherry group c exam preparation',
+    'puducherry exam previous papers',
+    'pondicherry group c recruitment',
     'UDC 2023 pondicherry question paper',
     'puducherry field assistant mock test',
-    'pondicherry police constable exam',
-    'puducherry VAO exam preparation',
+    'pondicherry police constable question paper',
+    'puducherry VAO recruitment mock test',
   ],
   openGraph: {
-    title: 'PondyPrep — Pondicherry Government Exam Mock Tests',
-    description: 'Real question papers. Timed tests. Exclusively for Puducherry.',
+    title: 'PondyPrep — Pondicherry Recruitment Mock Tests & Question Papers',
+    description: 'Real past question papers and timed mock tests for Puducherry government examinations.',
     url: process.env.NEXT_PUBLIC_APP_URL,
     siteName: 'PondyPrep',
     locale: 'en_IN',
@@ -34,8 +37,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PondyPrep — Pondicherry Exam Prep',
-    description: 'Real question papers. Timed tests. Exclusively for Puducherry.',
+    title: 'PondyPrep — Pondicherry Exams & Mock Tests',
+    description: 'Real past question papers and timed mock tests for Puducherry government examinations.',
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
 }
@@ -44,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="min-h-full antialiased bg-[#F8FAFC] text-slate-900 font-sans">
+        <AnnouncementBanner />
         {children}
         <Toaster
           position="bottom-right"
