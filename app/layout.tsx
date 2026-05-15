@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'sonner'
-import AnnouncementBanner from '@/components/AnnouncementBanner'
 import './globals.css'
 
 const geistSans = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
@@ -47,7 +46,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="min-h-full antialiased bg-[#F8FAFC] text-slate-900 font-sans">
-        <AnnouncementBanner />
         {children}
         <Toaster
           position="bottom-right"

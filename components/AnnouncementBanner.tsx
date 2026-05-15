@@ -14,7 +14,7 @@ export default function AnnouncementBanner() {
         <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider mr-2 shadow-sm animate-pulse">
           Alert
         </span>
-        Puducherry LDC (Lower Division Clerk) Exam Date Announced: May 31, 2026!{' '}
+        Puducherry CHSL (Combined Higher Secondary Level) Exam Date: May 31, 2026!{' '}
         <Link href="/tests" className="underline underline-offset-2 hover:text-blue-100 ml-1 font-bold">
           Take a free mock test now →
         </Link>
